@@ -1,7 +1,9 @@
-package com.cloud.customer.impl;
+package com.cloud.customer.service.impl;
 
 import com.cloud.customer.dto.CustomerDto;
 import com.cloud.customer.dto.CustomerDtoDummy;
+import com.cloud.customer.dto.DepositResponseDto;
+import com.cloud.customer.dto.DepositResponseDtoDummy;
 import com.cloud.customer.exception.NotFoundException;
 import com.cloud.customer.exception.RepetitiveNationalCode;
 import com.cloud.customer.mapper.CustomerMapper;
@@ -20,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -129,22 +132,28 @@ public class CustomerServiceImplTest {
     }
 
     @Test
-    void getCustomerDeposit_NotValidNationlCode_throwNotFoundException(){
+    void getCustomerDeposit_NotValidNationalCode_throwNotFoundException(){
         //given
         when(customerRepository.findCustomerByNationalCode(anyString())).thenReturn(Optional.empty());
         //when
         NotFoundException exception = assertThrows(NotFoundException.class,
                 () -> customerService.getCustomerDeposit(anyString()));
-        //then;
+        //then
         assertEquals("not.found.entity",exception.getErrorResponse().getMessage());
     }
 
-//    @Test
-//    void getCustomerDeposit_validNationalCode_successfullyReturnDepositResponseDtoList(){
-//        //given
-//        Customer customer = CustomerDummy.validCustomerBuilder();
-//        List<DepositResponseDto> depositResponseDtos = DepositResponseDtoDummy.getDepositResponseList();
-//        when(customerRepository.findCustomerByNationalCode(anyString())).thenReturn(Optional.of(customer));
-//        when(customerRepository)
-//    }
+    @Test
+    void getCustomerDeposit_validNationalCode_successfullyReturnDepositResponseDtoList(){
+        //given
+        Customer customer = CustomerDummy.validCustomerBuilder();
+        List<DepositResponseDto> depositResponseDtos = DepositResponseDtoDummy.getDepositResponseList();
+        when(customerRepository.findCustomerByNationalCode(anyString())).thenReturn(Optional.of(customer));
+        when(depositFeignClient.getCustomerDeposit(customer.getNationalCode())).thenReturn(depositResponseDtos);
+        //when
+        List<DepositResponseDto> customerDepositResult = customerService.getCustomerDeposit(customer.getNationalCode());
+        //then
+        assertEquals(depositResponseDtos,customerDepositResult);
+        verify(customerRepository, times(1)).findCustomerByNationalCode(anyString());
+        verify(depositFeignClient, times(1)).getCustomerDeposit(customer.getNationalCode());
+    }
 }
