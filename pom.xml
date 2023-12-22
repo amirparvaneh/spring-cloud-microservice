@@ -17,6 +17,8 @@
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>customer</module>
+        <module>deposit</module>
+        <module>transaction</module>
     </modules>
 
 

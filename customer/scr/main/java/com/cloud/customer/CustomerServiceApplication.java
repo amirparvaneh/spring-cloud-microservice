@@ -1,4 +1,4 @@
-package main.com.cloud.customer;
+package com.cloud.customer;
 
 
 import org.springframework.boot.SpringApplication;
