@@ -1,0 +1,49 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: micro
+    password: PASSWORD
+    url: jdbc:mysql://localhost:3306/customer
+    name: customer
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  messages:
+    basename: message
+server:
+  port: 8081
+  servlet:
+    context-path: /customer-micro
+
+#name:
+#  service:
+#    deposit:
+#      url: http://localhost:8082
+#      path: /deposit-micro
+
+
+#spring:
+#  datasource:
+#    url: jdbc:h2:mem:customer;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    database-platform: org.hibernate.dialect.H2Dialect
+#    show-sql: true
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
+#      settings:
+#        web-allow-others: true
+#  sql:
+#    init:
+#      mode: always
+#  mvc:
+#    pathmatch:
+
+#      matching-strategy: ant_path_matcher
