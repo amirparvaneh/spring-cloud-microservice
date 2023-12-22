@@ -1,0 +1,53 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: micro2
+    password: PASSWORD
+    url: jdbc:mysql://localhost:3307/deposit
+    name: deposit
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  messages:
+    basename: message
+server:
+  port: 8082
+  servlet:
+    context-path: /deposit-micro
+
+
+name:
+  service:
+    transaction:
+      url: http://localhost:8083
+      path: /transaction-micro
+    customer:
+      url: http://localhost:8081
+      path: /customer-micro
+
+
+
+
+
+#spring:
+#  datasource:
+#    url: jdbc:h2:mem:deposit;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    database-platform: org.hibernate.dialect.H2Dialect
+#    show-sql: true
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
+#      settings:
+#        web-allow-others: true
+#  sql:
+#    init:
+
+#      mode: always
