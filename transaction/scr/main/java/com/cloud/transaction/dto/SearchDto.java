@@ -2,7 +2,7 @@ package com.cloud.transaction.dto;
 
 import com.cloud.transaction.constant.ErrorMessage;
 
-import jakarta.validation.constraints.NotNull;
+import com.cloud.deposit.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.io.Serializable;

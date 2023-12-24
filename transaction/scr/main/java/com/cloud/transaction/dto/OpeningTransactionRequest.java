@@ -3,8 +3,8 @@ package com.cloud.transaction.dto;
 
 import com.cloud.transaction.constant.ErrorMessage;
 import com.cloud.transaction.model.TransactionType;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import com.cloud.deposit.validation.constraints.NotNull;
+import com.cloud.deposit.validation.constraints.Positive;
 import lombok.Builder;
 
 

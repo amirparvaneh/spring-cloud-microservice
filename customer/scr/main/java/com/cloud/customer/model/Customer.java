@@ -6,10 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import com.cloud.deposit.persistence.Column;
+import com.cloud.deposit.persistence.Entity;
+import com.cloud.deposit.persistence.EnumType;
+import com.cloud.deposit.persistence.Enumerated;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

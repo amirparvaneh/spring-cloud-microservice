@@ -1,9 +1,8 @@
 package com.cloud.deposit.model;
 
-import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 
-
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

@@ -2,6 +2,7 @@ package com.cloud.deposit.service;
 
 
 import com.cloud.deposit.dto.ChangeStatusDto;
+import com.cloud.deposit.dto.DepositRequestDto;
 import com.cloud.deposit.dto.InputAmountDto;
 import com.cloud.deposit.dto.WithdrawAmountDto;
 import com.cloud.deposit.dto.transaction.TransactionResponseDto;
@@ -14,15 +15,15 @@ import java.util.Optional;
 
 public interface DepositService {
 
-    Deposit addDeposit(Deposit deposit);
+    Deposit addDeposit(DepositRequestDto depositRequestDto);
     List<Deposit> findAllDeposit();
     List<Deposit> findCustomerDeposit(String nationalCode);
-    void deleteDeposit(Deposit depositNumber);
+    void deleteDeposit(Integer depositNumber);
     Optional<Deposit> findDepositByDepositNumber(Integer depositNumber);
     TransactionResponseDto inputAmount(InputAmountDto inputAmountDto);
     TransactionResponseDto withdrawAmount(WithdrawAmountDto withdrawAmountDto);
     TransactionResponseDto transferOperation(TransferDepositDto transferDepositDto);
     Long getBalance(Integer depositNumber);
     Deposit changeDepositStatus(ChangeStatusDto changeStatusDto);
-    List<String> findCustomerOfDeposityType(DepositType depositType);
+    List<String> findCustomerOfDepositType(DepositType depositType);
 }

@@ -6,7 +6,7 @@ import com.cloud.transaction.mapper.TransactionMapper;
 import com.cloud.transaction.model.Transaction;
 import com.cloud.transaction.model.TransactionType;
 import com.cloud.transaction.service.impl.TransactionServiceImpl;
-import jakarta.validation.Valid;
+import com.cloud.deposit.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

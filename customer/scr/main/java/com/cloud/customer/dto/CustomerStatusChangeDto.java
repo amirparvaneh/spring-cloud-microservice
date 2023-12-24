@@ -4,8 +4,8 @@ import com.cloud.customer.constant.ErrorMessage;
 import com.cloud.customer.model.CustomerStatus;
 import lombok.Builder;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import com.cloud.deposit.validation.constraints.NotNull;
+import com.cloud.deposit.validation.constraints.Pattern;
 import java.io.Serializable;
 
 @Builder

@@ -3,6 +3,7 @@ package com.cloud.deposit.service.impl;
 
 import com.cloud.deposit.constant.Message;
 import com.cloud.deposit.dto.ChangeStatusDto;
+import com.cloud.deposit.dto.DepositRequestDto;
 import com.cloud.deposit.dto.InputAmountDto;
 import com.cloud.deposit.dto.WithdrawAmountDto;
 import com.cloud.deposit.dto.customer.CustomerResponseDto;
@@ -22,13 +23,16 @@ import com.cloud.deposit.service.transactionStrategy.InputTransaction;
 import com.cloud.deposit.service.transactionStrategy.TransferTransaction;
 import com.cloud.deposit.service.transactionStrategy.WithdrawTransaction;
 import com.cloud.deposit.service.validation.EnumValidation;
+import com.cloud.deposit.service.validation.ServiceValidation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,47 +48,23 @@ public class DepositServiceImpl implements DepositService {
     private final TransferTransaction transferTransaction;
     private final WithdrawTransaction withdrawTransaction;
     private final FinanaceOperation finanaceOperation;
+    private final ServiceValidation serviceValidation;
+    private final DepositUtilService depositUtilService;
     private final EnumValidation<DepositStatus> depositStatusEnumValidation = new EnumValidation<>(DepositStatus.class);
 
 
     @Override
-    public Deposit addDeposit(Deposit deposit) {
-        CustomerResponseDto customerResponseDto = checkCustomerInformation(deposit.getNationalCode());
-        Title depositTitle = createDepositTitle(customerResponseDto, deposit);
-        depositTitle.setCreatedAt(LocalDateTime.now());
+    public Deposit addDeposit(DepositRequestDto depositRequestDto) {
+        Deposit deposit = serviceValidation.mapDeposit(depositRequestDto);
+        CustomerResponseDto customerResponseDto = depositUtilService.checkCustomerInformation(deposit.getNationalCode());
+        Title depositTitle = depositUtilService.createDepositTitle(customerResponseDto, deposit);
         deposit.setTitle(depositTitle);
-        generateDepositNumber(deposit);
-        deposit.setCreatedAt(LocalDateTime.now());
-        deposit.setCurrnecy(deposit.getCurrnecy());
-        TransactionResponseDto openingTransaction = createOpeningTransaction(deposit);
+        depositUtilService.generateDepositNumber(deposit);
+        TransactionResponseDto openingTransaction = depositUtilService.createOpeningTransaction(deposit);
         log.info("transaction with referece number : " + openingTransaction.getReferenceNumber() + "done");
         depositRepository.save(deposit);
         log.info("deposit with number : " + deposit.getDepositNumber() + "created.");
         return deposit;
-    }
-
-    private Title createDepositTitle(CustomerResponseDto customerResponseDto, Deposit deposit) {
-        Title title = Title.builder()
-                .titleName(createTitleName(customerResponseDto,deposit))
-                .customerFirstName(customerResponseDto.getFirstName())
-                .customerLastName(customerResponseDto.getLastName())
-                .depositType(deposit.getDepositType())
-                .build();
-        return title;
-    }
-
-    private String createTitleName(CustomerResponseDto customerResponseDto, Deposit deposit){
-        return customerResponseDto.getFirstName()+"_"+customerResponseDto.getLastName()+"_"+deposit.getDepositType();
-    }
-
-    private CustomerResponseDto checkCustomerInformation(String nationalCode) {
-        CustomerResponseDto customerResponseDto = customerMicroFeign.checkCustomerExistence(nationalCode);
-        if (Objects.nonNull(customerResponseDto)) {
-            log.info(("customer approved with national code : " + nationalCode + "###"));
-            return customerResponseDto;
-        } else {
-            throw new NotValidNationalCode(nationalCode);
-        }
     }
 
     @Override
@@ -94,34 +74,38 @@ public class DepositServiceImpl implements DepositService {
 
     @Override
     public List<Deposit> findCustomerDeposit(String nationalCode) {
+        depositUtilService.checkCustomerInformation(nationalCode);
         return depositRepository.findAllByNationalCode(nationalCode);
     }
 
     @Override
-    public void deleteDeposit(Deposit deposit) {
+    public void deleteDeposit(Integer depositNumber) {
+        Deposit deposit = depositRepository.findDepositByDepositNumber(depositNumber)
+                .orElseThrow(() -> new NotFoundException(depositNumber));
         depositRepository.delete(deposit);
     }
 
     @Override
     public Optional<Deposit> findDepositByDepositNumber(Integer depositNumber) {
-        return depositRepository.findDepositByDepositNumber(depositNumber);
+        Optional<Deposit> deposit = depositRepository.findDepositByDepositNumber(depositNumber);
+        deposit.orElseThrow(
+                () -> new NotFoundException(depositNumber));
+        return deposit;
     }
 
     @Override
     public TransactionResponseDto inputAmount(InputAmountDto inputAmountDto) {
         TransactionRequestDto transactionRequestDto = DepositMapper.INSTANCE.inputAmountDtoToTransactionRequest(inputAmountDto);
         transactionRequestDto.setTransactionType(TransactionType.INPUT);
-        validateDestNumber(transactionRequestDto);
+        serviceValidation.validateDestNumber(transactionRequestDto);
         Deposit deposit = findDeposit(transactionRequestDto.getDestDepositNumber());
-        validationBeforeInput(deposit);
+        serviceValidation.validationBeforeInput(deposit);
         TransactionResponseDto transactionResponseDto =
                 inputTransaction.sendRequestToTransactionMicroservice(transactionRequestDto);
-        if (transactionResponseDto.getTransactionStatus().equals(TransactionStatus.SUCCESS)) {
-//            deposit.setBalance(deposit.getBalance() + transactionRequestDto.getAmount());
-            finanaceOperation.addAmount(deposit,transactionRequestDto);
-            depositRepository.save(deposit);
-        } else
-            log.info("transaction failed with reference number : " + transactionResponseDto.getReferenceNumber());
+        serviceValidation.validateTransactionResponse(transactionRequestDto, transactionResponseDto, deposit);
+        log.info("transaction done with status : " + transactionResponseDto.getTransactionStatus() +
+                "reference number : " + transactionResponseDto.getReferenceNumber() + "for deposit number : " +
+                deposit.getDepositNumber());
         return transactionResponseDto;
     }
 
@@ -135,7 +119,7 @@ public class DepositServiceImpl implements DepositService {
         TransactionResponseDto transactionResponseDto =
                 withdrawTransaction.sendRequestToTransactionMicroservice(transactionRequestDto);
         if (transactionResponseDto.getTransactionStatus().equals(TransactionStatus.SUCCESS)) {
-            finanaceOperation.subtractAmount(deposit,transactionRequestDto);
+            finanaceOperation.subtractAmount(deposit, transactionRequestDto);
             depositRepository.save(deposit);
         } else
             log.info("transaction failed with reference number : " + transactionResponseDto.getReferenceNumber());
@@ -151,9 +135,9 @@ public class DepositServiceImpl implements DepositService {
         TransactionResponseDto transactionResponseDto =
                 transferTransaction.sendRequestToTransactionMicroservice(transactionRequestDto);
         if (transactionResponseDto.getTransactionStatus().equals(TransactionStatus.SUCCESS)) {
-            finanaceOperation.subtractAmount(originDeposit,transactionRequestDto);
+            finanaceOperation.subtractAmount(originDeposit, transactionRequestDto);
             depositRepository.save(originDeposit);
-            finanaceOperation.addAmount(destDeposit,transactionRequestDto);
+            finanaceOperation.addAmount(destDeposit, transactionRequestDto);
             depositRepository.save(destDeposit);
             return transactionResponseDto;
         } else {
@@ -222,24 +206,11 @@ public class DepositServiceImpl implements DepositService {
 
 
     @Override
-    public List<String> findCustomerOfDeposityType(DepositType depositType) {
+    public List<String> findCustomerOfDepositType(DepositType depositType) {
         List<Deposit> deposits = depositRepository.findDepositsByDepositType(depositType);
         List<String> customerNationalCode = new ArrayList<>();
         deposits.stream().map(deposit -> customerNationalCode.add(deposit.getNationalCode())).collect(Collectors.toList());
         return customerNationalCode;
-    }
-
-    private void generateDepositNumber(Deposit deposit) {
-        int depositRandomNum;
-        do {
-            depositRandomNum = randomNumber();
-        } while (depositRepository.findDepositByDepositNumber(depositRandomNum).isPresent());
-        deposit.setDepositNumber(depositRandomNum);
-    }
-
-    private int randomNumber() {
-        Random random = new Random();
-        return 10000 + random.nextInt(90000);
     }
 
     private boolean checkRemovingDeposit(Integer depositNumber) {
@@ -248,46 +219,6 @@ public class DepositServiceImpl implements DepositService {
             depositRepository.deleteByDepositNumber(depositNumber);
             return true;
         } else return false;
-    }
-
-    private TransactionResponseDto createOpeningTransaction(Deposit deposit) {
-        checkDepositInputAmount(deposit.getBalance());
-        OpeningTransactionRequest openingTransactionRequest = OpeningTransactionRequest.builder()
-                .amount(deposit.getBalance())
-                .destDepositNumber(deposit.getDepositNumber())
-                .transactionType(TransactionType.INPUT)
-                .build();
-        TransactionResponseDto openingTransaction = transactionMicroFeign.createOpeningTransaction(openingTransactionRequest);
-        if (Objects.isNull(openingTransaction)) {
-            if (openingTransaction.getTransactionStatus().equals(TransactionStatus.FAIL)) {
-                throw new FailureTransaction(openingTransaction.getTransactionStatus());
-            }
-        }
-        return openingTransaction;
-    }
-
-    private void checkDepositInputAmount(Long amount) {
-        if (amount < 100) {
-            throw new FailureTransaction(amount);
-        } else return;
-    }
-
-    private void validationBeforeInput(Deposit deposit) {
-        if (deposit.getDepositStatus().equals(DepositStatus.OPEN) ||
-                deposit.getDepositStatus().equals(DepositStatus.BLOCKED_WITHDRAW)) {
-            return;
-        }
-        log.info("not valid input for this deposit : " + deposit.getDepositNumber()
-                + "with this status : " + deposit.getDepositStatus());
-        throw new NotValidToInput(deposit.getDepositNumber(), deposit.getDepositStatus());
-    }
-
-    private void validateDestNumber(TransactionRequestDto transactionRequestDto) {
-        if (Objects.nonNull(transactionRequestDto.getDestDepositNumber())) {
-            return;
-        } else {
-            throw new NotValidToInput("no destination input!");
-        }
     }
 
     private void validateOriginNumber(TransactionRequestDto transactionRequestDto) {

@@ -23,7 +23,7 @@ public class InputTransaction implements TransactionStrategy {
         log.info(LocalDateTime.now() + "send input request to transaction microservice...");
         TransactionResponseDto transactionResponseDto = transactionMicroFeign.inputAmount(transactionRequestDto);
         log.info("at this time : " + LocalDateTime.now() +
-                "request get backed with this reference number : " +transactionResponseDto.getReferenceNumber());
+                "request get backed with this reference number : " + transactionResponseDto.getReferenceNumber());
         return transactionResponseDto;
     }
 }

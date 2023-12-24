@@ -1,9 +1,9 @@
 package com.cloud.deposit.model;
 
 
-import jakarta.persistence.*;
 import lombok.Builder;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity

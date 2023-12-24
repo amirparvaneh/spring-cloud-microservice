@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 
-import jakarta.persistence.*;
+import com.cloud.deposit.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import static jakarta.persistence.TemporalType.TIME;
-import static jakarta.persistence.TemporalType.TIMESTAMP;
+import static com.cloud.deposit.persistence.TemporalType.TIME;
+import static com.cloud.deposit.persistence.TemporalType.TIMESTAMP;
 
 
 @MappedSuperclass

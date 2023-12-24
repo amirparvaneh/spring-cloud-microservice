@@ -2,8 +2,8 @@ package com.cloud.transaction.model;
 
 
 import com.cloud.transaction.constant.ErrorMessage;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import com.cloud.deposit.persistence.*;
+import com.cloud.deposit.validation.constraints.NotNull;
 import lombok.Builder;
 
 

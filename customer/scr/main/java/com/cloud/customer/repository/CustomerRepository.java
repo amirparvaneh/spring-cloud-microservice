@@ -1,11 +1,9 @@
 package com.cloud.customer.repository;
 
-import com.cloud.customer.dto.CustomerFilterDto;
 import com.cloud.customer.model.Customer;
 import com.cloud.customer.model.CustomerStatus;
 import com.cloud.customer.model.CustomerType;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

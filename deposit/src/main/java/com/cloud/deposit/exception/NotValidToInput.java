@@ -20,7 +20,7 @@ public class NotValidToInput extends BusinessException {
 
     public NotValidToInput(String message){
         super(new ErrorResponse(
-                "mandatory.field",
+                "not.valid.mandatory.field",
                 HttpStatus.BAD_REQUEST,
                 LocalDateTime.now(),
                 message

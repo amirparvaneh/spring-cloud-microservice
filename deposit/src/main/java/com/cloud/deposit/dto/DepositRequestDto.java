@@ -1,13 +1,10 @@
 package com.cloud.deposit.dto;
 
 import com.cloud.deposit.constant.ErrorMessage;
-import com.cloud.deposit.model.Currency;
-import com.cloud.deposit.model.DepositType;
+import lombok.Builder;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -20,9 +17,9 @@ public class DepositRequestDto implements Serializable {
     @NotNull(message = ErrorMessage.ERROR_MINUMUM_BALANCE_OPENING)
     private Long balance;
     @NotNull(message = ErrorMessage.ERROR_MANDATORY)
-    private DepositType depositType;
+    private String depositType;
     @NotNull(message = ErrorMessage.ERROR_MANDATORY)
-    private Currency currency;
+    private String currency;
     private LocalDateTime startDate;
     private LocalDateTime expireDate;
 
@@ -32,9 +29,9 @@ public class DepositRequestDto implements Serializable {
 
     public DepositRequestDto(@NotEmpty(message = ErrorMessage.ERROR_NATIONAL_CODE_NEEDED) String nationalCode,
                              @NotNull(message = ErrorMessage.ERROR_MINUMUM_BALANCE_OPENING) Long balance,
-                             @NotNull(message = ErrorMessage.ERROR_MANDATORY) DepositType depositType,
-                             @NotNull(message = ErrorMessage.ERROR_MANDATORY) Currency currency, LocalDateTime startDate,
-                             LocalDateTime expireDate) {
+                             @NotNull(message = ErrorMessage.ERROR_MANDATORY) String depositType,
+                             @NotNull(message = ErrorMessage.ERROR_MANDATORY) String currency,
+                             LocalDateTime startDate, LocalDateTime expireDate) {
         this.nationalCode = nationalCode;
         this.balance = balance;
         this.depositType = depositType;
@@ -59,19 +56,35 @@ public class DepositRequestDto implements Serializable {
         this.balance = balance;
     }
 
-    public DepositType getDepositType() {
+    public String getDepositType() {
         return depositType;
     }
 
-    public void setDepositType(DepositType depositType) {
+    public void setDepositType(String depositType) {
         this.depositType = depositType;
     }
 
-    public Currency getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDateTime getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(LocalDateTime expireDate) {
+        this.expireDate = expireDate;
     }
 }

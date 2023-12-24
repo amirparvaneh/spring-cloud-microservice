@@ -1,10 +1,10 @@
 package com.cloud.deposit.dto.transaction;
 
 import com.cloud.deposit.constant.ErrorMessage;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 
 

@@ -5,12 +5,10 @@ import com.cloud.deposit.constant.Message;
 import com.cloud.deposit.dto.*;
 import com.cloud.deposit.dto.transaction.TransactionResponseDto;
 import com.cloud.deposit.dto.transaction.TransferDepositDto;
-import com.cloud.deposit.exception.NotFoundException;
 import com.cloud.deposit.mapper.DepositMapper;
 import com.cloud.deposit.model.Deposit;
 import com.cloud.deposit.model.DepositType;
 import com.cloud.deposit.service.impl.DepositServiceImpl;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-
+import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -34,11 +32,11 @@ public class DepositController {
     @PostMapping
     public ResponseEntity<BaseResponseDto> addDeposit(@RequestBody(required = true) DepositRequestDto depositRequestDto,
                                                       BindingResult bindingResult) {
-        Deposit deposit = DepositMapper.INSTANCE.depositRequestDtoToDeposit(depositRequestDto);
+
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(BaseResponseDto.builder().message("bad input").build());
         }
-        Deposit createdDeposit = depositService.addDeposit(deposit);
+        Deposit createdDeposit = depositService.addDeposit(depositRequestDto);
         return ResponseEntity.ok(BaseResponseDto.builder()
                 .message(Message.DEPOSIT_ADDED)
                 .result(createdDeposit)
@@ -64,7 +62,7 @@ public class DepositController {
 
     @GetMapping(value = "/customer-of-deposit-type")
     public ResponseEntity<BaseResponseDto> getCustomerOfOneDeposit(@RequestParam DepositType depositType) {
-        List<String> customerOfDeposityType = depositService.findCustomerOfDeposityType(depositType);
+        List<String> customerOfDeposityType = depositService.findCustomerOfDepositType(depositType);
         return ResponseEntity.ok(BaseResponseDto.builder()
                 .message("success")
                 .result(customerOfDeposityType).build());
@@ -122,9 +120,7 @@ public class DepositController {
 
     @DeleteMapping(value = "/{depositNumber}")
     public ResponseEntity<BaseResponseDto> deleteDeposit(@PathVariable(value = "depositNumber") Integer depositNumber) {
-        Deposit deposit = depositService.findDepositByDepositNumber(depositNumber)
-                .orElseThrow(() -> new NotFoundException(depositNumber));
-        depositService.deleteDeposit(deposit);
+        depositService.deleteDeposit(depositNumber);
         return ResponseEntity.ok(BaseResponseDto.builder()
                 .message(Message.DEPOSIT_DELETED + depositNumber)
                 .build());

@@ -1,13 +1,11 @@
 package com.cloud.deposit.model;
 
 
+import lombok.Builder;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import lombok.Builder;
-
-
 
 @Entity
 @Builder

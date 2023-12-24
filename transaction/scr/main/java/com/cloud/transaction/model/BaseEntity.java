@@ -1,6 +1,6 @@
 package com.cloud.transaction.model;
 
-import jakarta.persistence.*;
+import com.cloud.deposit.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 
