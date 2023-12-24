@@ -1,4 +1,4 @@
-package com.cloud.customer.impl;
+package com.cloud.customer.service.impl;
 
 import com.cloud.customer.dto.*;
 import com.cloud.customer.exception.*;
@@ -6,8 +6,6 @@ import com.cloud.customer.mapper.CustomerMapper;
 import com.cloud.customer.model.*;
 import com.cloud.customer.proxy.DepositFeignClient;
 import com.cloud.customer.repository.CustomerRepository;
-import com.cloud.customer.service.impl.CustomerServiceImpl;
-import com.cloud.customer.service.impl.ValidationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

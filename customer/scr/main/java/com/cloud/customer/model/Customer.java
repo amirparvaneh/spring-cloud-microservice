@@ -1,15 +1,13 @@
 package com.cloud.customer.model;
 
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.cloud.deposit.persistence.Column;
-import com.cloud.deposit.persistence.Entity;
-import com.cloud.deposit.persistence.EnumType;
-import com.cloud.deposit.persistence.Enumerated;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

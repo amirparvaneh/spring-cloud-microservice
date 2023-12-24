@@ -2,10 +2,10 @@ package com.cloud.customer.dto;
 
 import com.cloud.customer.constant.ErrorMessage;
 import com.cloud.customer.model.CustomerStatus;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
-import com.cloud.deposit.validation.constraints.NotNull;
-import com.cloud.deposit.validation.constraints.Pattern;
+
 import java.io.Serializable;
 
 @Builder
