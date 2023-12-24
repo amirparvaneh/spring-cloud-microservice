@@ -1,10 +1,14 @@
 package com.cloud.customer.controller;
 
-
+import com.cloud.customer.constant.ErrorMessage;
 import com.cloud.customer.constant.Message;
 import com.cloud.customer.dto.*;
+import com.cloud.customer.exception.NotValidStatus;
+import com.cloud.customer.exception.RepetitiveNationalCode;
 import com.cloud.customer.mapper.CustomerMapper;
 import com.cloud.customer.model.Customer;
+import com.cloud.customer.model.CustomerStatus;
+import com.cloud.customer.model.CustomerType;
 import com.cloud.customer.service.impl.CustomerServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +20,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController

@@ -2,6 +2,8 @@ package com.cloud.customer.exception;
 
 
 import com.cloud.customer.global.ErrorResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;

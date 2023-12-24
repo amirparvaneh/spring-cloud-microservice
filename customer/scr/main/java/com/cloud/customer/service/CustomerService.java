@@ -5,8 +5,10 @@ import com.cloud.customer.dto.CustomerFilterDto;
 import com.cloud.customer.dto.DepositResponseDto;
 import com.cloud.customer.model.Customer;
 import com.cloud.customer.model.CustomerStatus;
+import com.cloud.customer.model.CustomerType;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface CustomerService{

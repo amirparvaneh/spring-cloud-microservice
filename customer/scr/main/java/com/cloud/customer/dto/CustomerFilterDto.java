@@ -1,7 +1,14 @@
 package com.cloud.customer.dto;
 
+import com.cloud.customer.model.CustomerStatus;
+import com.cloud.customer.model.CustomerType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import java.io.Serializable;
 
 

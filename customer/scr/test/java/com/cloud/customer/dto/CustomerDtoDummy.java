@@ -14,4 +14,15 @@ public class CustomerDtoDummy {
                 .build();
     }
 
+    public static CustomerDto notValidCustomerType() {
+        return CustomerDto.builder()
+                .customerType("REAL33")
+                .nationalCode("0002221118")
+                .dataOfBirth(LocalDateTime.now())
+                .firstName("cuFirstName1")
+                .lastName("cuLastName1")
+                .phoneNumber("09305551112")
+                .build();
+    }
+
 }

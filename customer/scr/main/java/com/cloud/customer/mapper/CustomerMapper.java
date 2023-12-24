@@ -6,7 +6,6 @@ import com.cloud.customer.model.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
 

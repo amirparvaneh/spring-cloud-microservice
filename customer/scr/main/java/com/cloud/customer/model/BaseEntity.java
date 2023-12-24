@@ -1,12 +1,17 @@
 package com.cloud.customer.model;
 
-import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 
-
+import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
+
+import static jakarta.persistence.TemporalType.TIME;
+import static jakarta.persistence.TemporalType.TIMESTAMP;
 
 
 @MappedSuperclass

@@ -1,11 +1,15 @@
 package com.cloud.customer.dto;
 
 import com.cloud.customer.constant.ErrorMessage;
+import com.cloud.customer.model.CustomerStatus;
+import com.cloud.customer.model.CustomerType;
+import jakarta.validation.*;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
+import lombok.*;
 
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder

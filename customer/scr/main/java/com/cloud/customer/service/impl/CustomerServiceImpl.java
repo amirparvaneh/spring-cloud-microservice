@@ -1,5 +1,6 @@
 package com.cloud.customer.service.impl;
 
+import com.cloud.customer.constant.ErrorMessage;
 import com.cloud.customer.dto.CustomerDto;
 import com.cloud.customer.dto.CustomerFilterDto;
 import com.cloud.customer.dto.DepositResponseDto;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -63,7 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<DepositResponseDto> getCustomerDeposit(String nationalCode) {
         Customer customer = customerRepository.findCustomerByNationalCode(nationalCode).orElseThrow(
-                ()-> new NotFoundException(nationalCode)
+                () -> new NotFoundException(nationalCode)
         );
         List<DepositResponseDto> customerDeposit = depositFeignClient.getCustomerDeposit(customer.getNationalCode());
         return customerDeposit;
@@ -92,11 +94,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<Customer> searchCustomerByFilter(CustomerFilterDto customerFilterDto) {
+        CustomerStatus customerStatus = validationService.getCustomerStatus(customerFilterDto.getCustomerStatus());
+        CustomerType customerType = validationService.getCustomerType(customerFilterDto.getCustomerType());
         List<Customer> customerList = customerRepository.findCustomerByFirstNameOrLastNameOrCustomerStatusOrCustomerType(
                 customerFilterDto.getFirstName(),
                 customerFilterDto.getLastName(),
-                getCustomerStatus(customerFilterDto.getCustomerStatus()),
-                getCustomerType(customerFilterDto.getCustomerType())
+                customerStatus,
+                customerType
         );
         return customerList;
     }
@@ -129,28 +133,6 @@ public class CustomerServiceImpl implements CustomerService {
             return;
         } else {
             throw new NotValidCustomerType(inputType);
-        }
-    }
-
-    private CustomerType getCustomerType(String input) {
-        if (Objects.isNull(input)) {
-            return null;
-        }
-        if (typeEnumValidation.isValidEnum(input)) {
-            return typeEnumValidation.getEnumConstant(input);
-        } else {
-            throw new NotValidCustomerType(input);
-        }
-    }
-
-    private CustomerStatus getCustomerStatus(String inputStatus) {
-        if (Objects.isNull(inputStatus)) {
-            return null;
-        }
-        if (statusEnumValidation.isValidEnum(inputStatus)) {
-            return statusEnumValidation.getEnumConstant(inputStatus);
-        } else {
-            throw new NotValidStatus(inputStatus);
         }
     }
 
