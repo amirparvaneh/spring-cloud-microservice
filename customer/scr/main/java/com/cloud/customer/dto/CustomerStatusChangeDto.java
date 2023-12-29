@@ -12,8 +12,7 @@ public class CustomerStatusChangeDto implements Serializable {
 
     @NotNull(message = ErrorMessage.ERROR_STATUS)
     private String customerCode;
-//    @Pattern
-//    private String nationalCode;
+
     @NotNull(message = ErrorMessage.ERROR_STATUS)
     private CustomerStatus customerStatus;
 }

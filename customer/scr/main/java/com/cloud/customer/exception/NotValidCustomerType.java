@@ -1,7 +1,7 @@
 package com.cloud.customer.exception;
 
 import com.cloud.customer.global.ErrorResponse;
-import com.cloud.customer.model.CustomerType;
+
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
