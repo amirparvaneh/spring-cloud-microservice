@@ -1,22 +1,21 @@
 package com.cloud.deposit.service.impl;
 
-import com.cloud.deposit.dto.DepositRequestDto;
-import com.cloud.deposit.dto.DepositRequestDtoDummy;
+import com.cloud.deposit.dto.*;
 import com.cloud.deposit.dto.customer.CustomerResponseDto;
 import com.cloud.deposit.dto.customer.CustomerResponseDummy;
+import com.cloud.deposit.dto.transaction.TransactionRequestDto;
 import com.cloud.deposit.dto.transaction.TransactionResponseDto;
 import com.cloud.deposit.dto.transaction.TransactionResponseDummy;
 import com.cloud.deposit.exception.NotFoundException;
 import com.cloud.deposit.exception.NotValidNationalCode;
 import com.cloud.deposit.exception.NotValidToInput;
 import com.cloud.deposit.mapper.DepositMapper;
-import com.cloud.deposit.model.Deposit;
-import com.cloud.deposit.model.DepositDummy;
-import com.cloud.deposit.model.Title;
-import com.cloud.deposit.model.TitleDummy;
+import com.cloud.deposit.model.*;
 import com.cloud.deposit.proxy.CustomerMicroFeign;
 import com.cloud.deposit.proxy.TransactionMicroFeign;
 import com.cloud.deposit.repository.DepositRepository;
+import com.cloud.deposit.service.transactionStrategy.InputTransaction;
+import com.cloud.deposit.service.transactionStrategy.WithdrawTransaction;
 import com.cloud.deposit.service.validation.ServiceValidation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,6 +53,12 @@ class DepositServiceImplTest {
     @Mock
     private DepositUtilService depositUtilService;
 
+    @Mock
+    private InputTransaction inputTransaction;
+
+    @Mock
+    private WithdrawTransaction withdrawTransaction;
+
     @InjectMocks
     private DepositServiceImpl depositService;
 
@@ -89,7 +94,8 @@ class DepositServiceImplTest {
         Deposit deposit = DepositDummy.validDepositBuilder();
         TransactionResponseDto transactionResponseDto = TransactionResponseDummy.validTransactionResponseBuilder();
         //when
-        lenient().when(customerMicroFeign.checkCustomerExistence(depositRequestDto.getNationalCode())).thenReturn(customerResponseDto);
+        lenient().when(customerMicroFeign.checkCustomerExistence(depositRequestDto.getNationalCode()))
+                .thenReturn(customerResponseDto);
         when(serviceValidation.mapDeposit(depositRequestDto)).thenReturn(deposit);
         when(depositUtilService.checkCustomerInformation(any()))
                 .thenReturn(null);
@@ -154,14 +160,14 @@ class DepositServiceImplTest {
     }
 
     @Test
-    void deleteDeposit_validDepositNumber_successfullyDeleted(){
+    void deleteDeposit_validDepositNumber_successfullyDeleted() {
         //given
         Deposit deposit = DepositDummy.validDepositBuilder();
         //when
         when(depositRepository.findDepositByDepositNumber(deposit.getDepositNumber())).thenReturn(Optional.of(deposit));
         //then
         depositService.deleteDeposit(deposit.getDepositNumber());
-        verify(depositRepository,times(1)).delete(deposit);
+        verify(depositRepository, times(1)).delete(deposit);
     }
 
     @Test
@@ -173,11 +179,11 @@ class DepositServiceImplTest {
         //then
         NotFoundException exception = assertThrows(NotFoundException.class,
                 () -> depositService.findDepositByDepositNumber(depositNumber));
-        assertEquals("not.found.entity",exception.getErrorResponse().getMessage());
+        assertEquals("not.found.entity", exception.getErrorResponse().getMessage());
     }
 
     @Test
-    void findDepositByDepositNumber_validDepositNumber_successfullyReturn(){
+    void findDepositByDepositNumber_validDepositNumber_successfullyReturn() {
         //given
         Deposit deposit = DepositDummy.validDepositBuilder();
         //when
@@ -185,21 +191,38 @@ class DepositServiceImplTest {
         //then
         Optional<Deposit> resultDeposit = depositService.findDepositByDepositNumber(deposit.getDepositNumber());
         assertNotNull(resultDeposit);
-        assertEquals(deposit,resultDeposit.get());
+        assertEquals(deposit, resultDeposit.get());
     }
 
     @Test
-    void inputAmount_not() {
+    void inputAmount_validInput_successfullyInputTransfer() {
         //given
+        InputAmountDto inputAmountDto = InputAmountDummy.inputAmountDtoBuilder();
+        TransactionRequestDto transactionRequestDto = depositMapper.inputAmountDtoToTransactionRequest(inputAmountDto);
+        TransactionResponseDto transactionResponseDto = TransactionResponseDummy.validTransactionResponseBuilder();
+        Deposit deposit = DepositDummy.validDepositBuilder();
         //when
+        when(serviceValidation.validateDestNumber(any())).thenReturn(deposit);
+        when(inputTransaction.sendRequestToTransactionMicroservice(any())).thenReturn(transactionResponseDto);
         //then
+        TransactionResponseDto actualResponse = depositService.inputAmount(inputAmountDto);
+        assertEquals(transactionResponseDto, actualResponse);
+
     }
 
     @Test
-    void withdrawAmount() {
+    void withdrawAmount_validInput_successfullyWithdrawTransfer() {
         //given
+        WithdrawAmountDto withdrawAmountDto = WithdrawAmountDummy.withdrawAmountDtoBuilder();
+        TransactionRequestDto transactionRequestDto = depositMapper.withdrawDtoToTransactionRequest(withdrawAmountDto);
+        TransactionResponseDto transactionResponseDto = TransactionResponseDummy.validTransactionResponseBuilder();
+        Deposit deposit = DepositDummy.validDepositBuilder();
         //when
+        when(serviceValidation.validateOriginNumber(any())).thenReturn(deposit);
+        when(withdrawTransaction.sendRequestToTransactionMicroservice(any())).thenReturn(transactionResponseDto);
         //then
+        TransactionResponseDto actualResponse = depositService.withdrawAmount(withdrawAmountDto);
+        assertEquals(transactionResponseDto, actualResponse);
     }
 
     @Test
@@ -210,10 +233,16 @@ class DepositServiceImplTest {
     }
 
     @Test
-    void getBalance() {
+    void getBalance_validDepositNumber_successfullyReturnBalance() {
         //given
+        Integer depositNumber = 234;
+        Deposit deposit = DepositDummy.validBalanceDepositBuilder();
         //when
+        when(depositRepository.findDepositByDepositNumber(anyInt())).thenReturn(Optional.of(deposit));
         //then
+        Long actualBalance = depositService.getBalance(depositNumber);
+        //assertNotNull(actualBalance);
+        assertEquals(deposit.getBalance(),actualBalance);
     }
 
     @Test
@@ -224,9 +253,15 @@ class DepositServiceImplTest {
     }
 
     @Test
-    void findCustomerOfDepositType() {
+    void findCustomerOfDepositType_validNationalCode_successfullyReturnListOfDeposti() {
         //given
+        DepositType depositType = DepositType.CURRENT_LOAN;
+        List<Deposit> depositList = DepositDummy.depositListForNationalCodeBuilder();
+        List<String> nationalCodeList = DepositDummy.nationalCodeListBuilder();
         //when
+        when(depositRepository.findDepositsByDepositType(any())).thenReturn(depositList);
         //then
+        List<String> acutalList = depositService.findCustomerOfDepositType(depositType);
+        assertEquals(nationalCodeList,acutalList);
     }
 }

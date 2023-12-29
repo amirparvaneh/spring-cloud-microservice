@@ -1,7 +1,11 @@
 package com.cloud.deposit.dto;
 
+import lombok.Builder;
+
 import java.io.Serializable;
 
+
+@Builder
 public class WithdrawAmountDto implements Serializable {
     private Long amount;
     private Integer originDepositNumber;

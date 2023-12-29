@@ -20,7 +20,6 @@ public class DepositRequestDto implements Serializable {
     private String depositType;
     @NotNull(message = ErrorMessage.ERROR_MANDATORY)
     private String currency;
-    private LocalDateTime startDate;
     private LocalDateTime expireDate;
 
 
@@ -31,12 +30,11 @@ public class DepositRequestDto implements Serializable {
                              @NotNull(message = ErrorMessage.ERROR_MINUMUM_BALANCE_OPENING) Long balance,
                              @NotNull(message = ErrorMessage.ERROR_MANDATORY) String depositType,
                              @NotNull(message = ErrorMessage.ERROR_MANDATORY) String currency,
-                             LocalDateTime startDate, LocalDateTime expireDate) {
+                             LocalDateTime expireDate) {
         this.nationalCode = nationalCode;
         this.balance = balance;
         this.depositType = depositType;
         this.currency = currency;
-        this.startDate = startDate;
         this.expireDate = expireDate;
     }
 
@@ -70,14 +68,6 @@ public class DepositRequestDto implements Serializable {
 
     public void setCurrency(String currency) {
         this.currency = currency;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
     }
 
     public LocalDateTime getExpireDate() {

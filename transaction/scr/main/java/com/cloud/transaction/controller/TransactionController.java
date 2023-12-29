@@ -6,7 +6,6 @@ import com.cloud.transaction.mapper.TransactionMapper;
 import com.cloud.transaction.model.Transaction;
 import com.cloud.transaction.model.TransactionType;
 import com.cloud.transaction.service.impl.TransactionServiceImpl;
-import com.cloud.deposit.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -54,7 +56,7 @@ public class TransactionController {
 
     @GetMapping(value = "/deposit-all-list")
     public ResponseEntity<List<Transaction>> getAllDepositTransaction(@RequestParam Integer destDeposit,
-                                                                      @RequestParam Integer originDeposit) {
+                                                                      @RequestParam(required = false) Integer originDeposit) {
         return ResponseEntity.ok(transactionService.depositTransaction(destDeposit, originDeposit));
     }
 
@@ -68,8 +70,8 @@ public class TransactionController {
                 .build());
     }
 
-    @GetMapping(value = "/deposit-list")
-    public ResponseEntity<List<TransactionResponseDto>> getDepositTransaction(@RequestBody @Valid SearchDto searchDto) {
+    @GetMapping(value = "/filter-list")
+    public ResponseEntity<List<TransactionResponseDto>> getTransactionByFilter(@RequestBody @Valid SearchDto searchDto) {
         List<TransactionResponseDto> transactionList =
                 TransactionMapper.INSTANCE.toListTransactionResponseDto(transactionService.getTransactionList(searchDto));
         return ResponseEntity.ok(transactionList);

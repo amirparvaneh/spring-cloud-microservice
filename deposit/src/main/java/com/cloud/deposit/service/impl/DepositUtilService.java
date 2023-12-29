@@ -31,11 +31,12 @@ public class DepositUtilService {
     private final DepositRepository depositRepository;
 
     public CustomerResponseDto checkCustomerInformation(String nationalCode) {
-        CustomerResponseDto customerResponseDto = customerMicroFeign.checkCustomerExistence(nationalCode);
-        if (Objects.nonNull(customerResponseDto)) {
+        CustomerResponseDto customerResponseDto = null;
+        try {
+            customerResponseDto = customerMicroFeign.checkCustomerExistence(nationalCode);
             log.info(("customer approved with national code : " + nationalCode + "###"));
             return customerResponseDto;
-        } else {
+        } catch (Exception e) {
             throw new NotValidNationalCode(nationalCode);
         }
     }

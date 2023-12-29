@@ -4,7 +4,7 @@ package com.cloud.deposit.model;
 import lombok.Builder;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -21,13 +21,15 @@ public class Deposit extends BaseEntity {
     private Long balance;
     private Integer depositNumber;
     private String nationalCode;
-    private LocalDate startDate;
-    private LocalDate expireDate;
+    private LocalDateTime startDate;
+    private LocalDateTime expireDate;
 
     public Deposit() {
     }
 
-    public Deposit(DepositType depositType, Title title, Currency currnecy, DepositStatus depositStatus, Long balance, Integer depositNumber, String nationalCode, LocalDate startDate, LocalDate expireDate) {
+    public Deposit(DepositType depositType, Title title, Currency currnecy, DepositStatus depositStatus,
+                   Long balance, Integer depositNumber, String nationalCode, LocalDateTime startDate,
+                   LocalDateTime expireDate) {
         this.depositType = depositType;
         this.title = title;
         this.currnecy = currnecy;
@@ -95,19 +97,19 @@ public class Deposit extends BaseEntity {
         this.nationalCode = nationalCode;
     }
 
-    public LocalDate getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getExpireDate() {
+    public LocalDateTime getExpireDate() {
         return expireDate;
     }
 
-    public void setExpireDate(LocalDate expireDate) {
+    public void setExpireDate(LocalDateTime expireDate) {
         this.expireDate = expireDate;
     }
 }

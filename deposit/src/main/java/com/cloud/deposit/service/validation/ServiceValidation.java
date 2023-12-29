@@ -5,6 +5,7 @@ import com.cloud.deposit.dto.transaction.TransactionRequestDto;
 import com.cloud.deposit.dto.transaction.TransactionResponseDto;
 import com.cloud.deposit.dto.transaction.TransactionStatus;
 import com.cloud.deposit.exception.NotValidToInput;
+import com.cloud.deposit.exception.NotValidToWithdraw;
 import com.cloud.deposit.mapper.DepositMapper;
 import com.cloud.deposit.model.Currency;
 import com.cloud.deposit.model.Deposit;
@@ -17,7 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +39,8 @@ public class ServiceValidation {
         Deposit deposit = DepositMapper.INSTANCE.depositRequestDtoToDeposit(depositRequestDto);
         deposit.setCurrnecy(currency);
         deposit.setDepositType(depositType);
+        deposit.setDepositStatus(DepositStatus.OPEN);
+        deposit.setStartDate(LocalDateTime.now());
         return deposit;
 
     }
@@ -56,11 +61,12 @@ public class ServiceValidation {
         }
     }
 
-    public void validateDestNumber(TransactionRequestDto transactionRequestDto) {
+    public Deposit validateDestNumber(TransactionRequestDto transactionRequestDto) {
         if (Objects.nonNull(transactionRequestDto.getDestDepositNumber())) {
-            return;
+            Optional<Deposit> deposit = depositRepository.findDepositByDepositNumber(transactionRequestDto.getDestDepositNumber());
+            return deposit.get();
         } else {
-            throw new NotValidToInput("no destination input!");
+            throw new NotValidToInput(transactionRequestDto.getDestDepositNumber().toString());
         }
     }
 
@@ -83,5 +89,36 @@ public class ServiceValidation {
             log.info("transaction failed with reference number : " + transactionResponseDto.getReferenceNumber());
         }
         return deposit;
+    }
+
+    public Deposit validateWithdrawResponse(TransactionRequestDto transactionRequestDto,
+                                            TransactionResponseDto transactionResponseDto,
+                                            Deposit deposit) {
+        if (transactionResponseDto.getTransactionStatus().equals(TransactionStatus.SUCCESS)) {
+            finanaceOperation.subtractAmount(deposit, transactionRequestDto);
+            depositRepository.save(deposit);
+        } else {
+            log.info("transaction failed with reference number : " + transactionResponseDto.getReferenceNumber());
+        }
+        return deposit;
+    }
+
+    public Deposit validateOriginNumber(TransactionRequestDto transactionRequestDto) {
+        if (Objects.nonNull(transactionRequestDto.getOriginDepositNumber())) {
+            Optional<Deposit> deposit = depositRepository.findDepositByDepositNumber(transactionRequestDto.getOriginDepositNumber());
+            return deposit.get();
+        } else {
+            throw new NotValidToWithdraw("no origin deposit found.");
+        }
+    }
+
+    public void validationBeforeWithdraw(Deposit deposit) {
+        if (deposit.getDepositStatus().equals(DepositStatus.OPEN) ||
+                deposit.getDepositStatus().equals(DepositStatus.BLOCKED_INPUT)) {
+            return;
+        }
+        log.info("not valid input for this deposit : " + deposit.getDepositNumber()
+                + "with this status : " + deposit.getDepositStatus());
+        throw new NotValidToWithdraw(deposit.getDepositNumber(), deposit.getDepositStatus());
     }
 }

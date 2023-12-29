@@ -1,6 +1,6 @@
 package com.cloud.deposit.dto;
 
-public class InputAmountDtoTest {
+public class InputAmountDummy {
     public static InputAmountDto inputAmountDtoBuilder() {
         return InputAmountDto.builder()
                 .amount(24234542l)

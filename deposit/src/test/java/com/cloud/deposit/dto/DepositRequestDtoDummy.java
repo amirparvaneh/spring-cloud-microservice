@@ -11,7 +11,6 @@ public class DepositRequestDtoDummy {
                 .balance(34234l)
                 .currency("RIAL")
                 .depositType("CURRENT_LOAN")
-                .startDate(LocalDateTime.now())
                 .expireDate(LocalDateTime.of(LocalDate.of(2033,12,31), LocalTime.now()))
                 .nationalCode("0736313691")
                 .build();
@@ -22,7 +21,6 @@ public class DepositRequestDtoDummy {
                 .balance(34234l)
                 .currency("RIAL33")
                 .depositType("CURRENT_LOAN")
-                .startDate(LocalDateTime.now())
                 .expireDate(LocalDateTime.of(LocalDate.of(2033,12,31), LocalTime.now()))
                 .nationalCode("0736313691")
                 .build();
@@ -32,7 +30,6 @@ public class DepositRequestDtoDummy {
                 .balance(34234l)
                 .currency("RIAL33")
                 .depositType("CURRENT_LOAN")
-                .startDate(LocalDateTime.now())
                 .expireDate(LocalDateTime.of(LocalDate.of(2033,12,31), LocalTime.now()))
                 .nationalCode("0736313691")
                 .build();
@@ -43,7 +40,6 @@ public class DepositRequestDtoDummy {
                 .balance(34234l)
                 .currency("RIAL")
                 .depositType("CURRENT_LOAN")
-                .startDate(LocalDateTime.now())
                 .expireDate(LocalDateTime.of(LocalDate.of(2033,12,31), LocalTime.now()))
                 .nationalCode("0736313333")
                 .build();

@@ -15,11 +15,11 @@ public class TransferCheck implements CheckStrategy {
 
     @Override
     public void check(Transaction transaction) {
-        prepareInputTransaction(transaction);
+        prepareTransferTransaction(transaction);
     }
 
 
-    private void prepareInputTransaction(Transaction transaction) {
+    private void prepareTransferTransaction(Transaction transaction) {
         if (!depositFeignProxy.checkDepositExistence(transaction.getDestDepositNumber()) ||
                 !depositFeignProxy.checkDepositExistence(transaction.getOriginDepositNumber())) {
             transaction.setTransactionStatus(TransactionStatus.FAIL);

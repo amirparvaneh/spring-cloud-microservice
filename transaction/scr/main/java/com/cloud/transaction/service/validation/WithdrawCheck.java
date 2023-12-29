@@ -16,11 +16,11 @@ public class WithdrawCheck implements CheckStrategy {
 
     @Override
     public void check(Transaction transaction) {
-        prepareInputTransaction(transaction);
+        prepareWithdrawTransaction(transaction);
     }
 
 
-    private void prepareInputTransaction(Transaction transaction) {
+    private void prepareWithdrawTransaction(Transaction transaction) {
         if (!depositFeignProxy.checkDepositExistence(transaction.getOriginDepositNumber())) {
             transaction.setTransactionStatus(TransactionStatus.FAIL);
         } else {

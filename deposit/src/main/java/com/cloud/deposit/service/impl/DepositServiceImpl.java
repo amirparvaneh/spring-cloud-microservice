@@ -97,8 +97,7 @@ public class DepositServiceImpl implements DepositService {
     public TransactionResponseDto inputAmount(InputAmountDto inputAmountDto) {
         TransactionRequestDto transactionRequestDto = DepositMapper.INSTANCE.inputAmountDtoToTransactionRequest(inputAmountDto);
         transactionRequestDto.setTransactionType(TransactionType.INPUT);
-        serviceValidation.validateDestNumber(transactionRequestDto);
-        Deposit deposit = findDeposit(transactionRequestDto.getDestDepositNumber());
+        Deposit deposit = serviceValidation.validateDestNumber(transactionRequestDto);
         serviceValidation.validationBeforeInput(deposit);
         TransactionResponseDto transactionResponseDto =
                 inputTransaction.sendRequestToTransactionMicroservice(transactionRequestDto);
@@ -113,16 +112,14 @@ public class DepositServiceImpl implements DepositService {
     public TransactionResponseDto withdrawAmount(WithdrawAmountDto withdrawAmountDto) {
         TransactionRequestDto transactionRequestDto = DepositMapper.INSTANCE.withdrawDtoToTransactionRequest(withdrawAmountDto);
         transactionRequestDto.setTransactionType(TransactionType.WITHDRAW);
-        validateOriginNumber(transactionRequestDto);
-        Deposit deposit = findDeposit(transactionRequestDto.getOriginDepositNumber());
-        validationBeforeWithdraw(deposit);
+        Deposit deposit = serviceValidation.validateOriginNumber(transactionRequestDto);
+        serviceValidation.validationBeforeWithdraw(deposit);
         TransactionResponseDto transactionResponseDto =
                 withdrawTransaction.sendRequestToTransactionMicroservice(transactionRequestDto);
-        if (transactionResponseDto.getTransactionStatus().equals(TransactionStatus.SUCCESS)) {
-            finanaceOperation.subtractAmount(deposit, transactionRequestDto);
-            depositRepository.save(deposit);
-        } else
-            log.info("transaction failed with reference number : " + transactionResponseDto.getReferenceNumber());
+        serviceValidation.validateWithdrawResponse(transactionRequestDto,transactionResponseDto,deposit);
+        log.info("transaction done with status : " + transactionResponseDto.getTransactionStatus() +
+                "reference number : " + transactionResponseDto.getReferenceNumber() + "for deposit number : " +
+                deposit.getDepositNumber());
         return transactionResponseDto;
     }
 
@@ -146,7 +143,7 @@ public class DepositServiceImpl implements DepositService {
         return transactionResponseDto;
     }
 
-    private Deposit findDeposit(Integer depositNumber) {
+    public Deposit findDeposit(Integer depositNumber) {
         return depositRepository.findDepositByDepositNumber(depositNumber).orElseThrow(
                 () -> new NotFoundException(depositNumber)
         );
@@ -219,24 +216,6 @@ public class DepositServiceImpl implements DepositService {
             depositRepository.deleteByDepositNumber(depositNumber);
             return true;
         } else return false;
-    }
-
-    private void validateOriginNumber(TransactionRequestDto transactionRequestDto) {
-        if (Objects.nonNull(transactionRequestDto.getOriginDepositNumber())) {
-            return;
-        } else {
-            throw new NotValidToWithdraw("no origin deposit found.");
-        }
-    }
-
-    private void validationBeforeWithdraw(Deposit deposit) {
-        if (deposit.getDepositStatus().equals(DepositStatus.OPEN) ||
-                deposit.getDepositStatus().equals(DepositStatus.BLOCKED_INPUT)) {
-            return;
-        }
-        log.info("not valid input for this deposit : " + deposit.getDepositNumber()
-                + "with this status : " + deposit.getDepositStatus());
-        throw new NotValidToWithdraw(deposit.getDepositNumber(), deposit.getDepositStatus());
     }
 
 }

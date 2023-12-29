@@ -2,14 +2,13 @@ package com.cloud.transaction.dto;
 
 import com.cloud.transaction.constant.ErrorMessage;
 import com.cloud.transaction.model.TransactionType;
-import com.cloud.deposit.validation.constraints.NotNull;
-import com.cloud.deposit.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.io.Serializable;
 
 @Builder

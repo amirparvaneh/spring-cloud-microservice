@@ -1,10 +1,13 @@
 package com.cloud.transaction.dto;
 
 import com.cloud.transaction.constant.ErrorMessage;
-
-import com.cloud.deposit.validation.constraints.NotNull;
+import com.cloud.transaction.model.TransactionType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

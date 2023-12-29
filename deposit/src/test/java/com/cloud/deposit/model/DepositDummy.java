@@ -21,4 +21,30 @@ public class DepositDummy {
         }
         return resultList;
     }
+
+    public static Deposit validBalanceDepositBuilder(){
+        return Deposit.builder()
+                .depositNumber(234)
+                .balance(3333l)
+                .build();
+    }
+
+    public static List<Deposit> depositListForNationalCodeBuilder(){
+        List<Deposit> resultList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Deposit deposit = new Deposit();
+            deposit.setNationalCode("24");
+            resultList.add(deposit);
+        }
+        return resultList;
+    }
+
+    public static List<String> nationalCodeListBuilder(){
+        List<String> nationalCode = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            String code = "24";
+            nationalCode.add(code);
+        }
+        return nationalCode;
+    }
 }

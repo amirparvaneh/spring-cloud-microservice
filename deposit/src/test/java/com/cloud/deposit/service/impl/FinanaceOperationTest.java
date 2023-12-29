@@ -6,9 +6,11 @@ class FinanaceOperationTest {
 
     @Test
     void addAmount() {
+
     }
 
     @Test
     void subtractAmount() {
+
     }
 }

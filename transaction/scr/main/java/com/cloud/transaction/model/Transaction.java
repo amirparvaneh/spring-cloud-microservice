@@ -2,11 +2,13 @@ package com.cloud.transaction.model;
 
 
 import com.cloud.transaction.constant.ErrorMessage;
-import com.cloud.deposit.persistence.*;
-import com.cloud.deposit.validation.constraints.NotNull;
 import lombok.Builder;
 
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "transactions")
