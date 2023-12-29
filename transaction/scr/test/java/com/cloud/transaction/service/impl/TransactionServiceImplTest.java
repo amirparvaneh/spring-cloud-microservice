@@ -16,10 +16,10 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -54,11 +54,30 @@ class TransactionServiceImplTest {
     }
 
     @Test
-    void depositTransaction() {
+    void depositTransaction_validInputDepositNumber_getListOfTransactions() {
+        //given
+        List<Transaction> transactionList = TransactionDummy.validTransactionList();
+        Integer depositNumber = 223;
+        Integer originDeposit = 424;
+        //when
+        when(transactionRepository.findTransactionsByDestDepositNumberOrOriginDepositNumber(any(),any()))
+                .thenReturn(transactionList);
+        //then
+        List<Transaction> actualList = transactionService.depositTransaction(depositNumber,originDeposit);
+        assertEquals(transactionList,actualList);
     }
 
     @Test
-    void findAll() {
+    void findAll_noArgs_successReturnList() {
+        //given
+        List<Transaction> transactionList = TransactionDummy.validTransactionList();
+        //when
+        when(transactionRepository.findAll()).thenReturn(transactionList);
+        //then
+        List<Transaction> actualResponse = transactionService.findAll();
+        assertNotNull(actualResponse);
+        assertEquals(transactionList,actualResponse);
+        verify(transactionRepository,times(1)).findAll();
     }
 
     @Test

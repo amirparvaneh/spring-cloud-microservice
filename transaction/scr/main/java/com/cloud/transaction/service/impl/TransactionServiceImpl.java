@@ -51,10 +51,9 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<Transaction> depositTransaction(Integer depositNumber, Integer originDesposit) {
-
+    public List<Transaction> depositTransaction(Integer depositNumber, Integer originDeposit) {
         List<Transaction> transactions = transactionRepository
-                .findTransactionsByDestDepositNumberOrOriginDepositNumber(depositNumber, originDesposit);
+                .findTransactionsByDestDepositNumberOrOriginDepositNumber(depositNumber, originDeposit);
         log.info("founded : " + transactions.size());
         return transactions;
     }
