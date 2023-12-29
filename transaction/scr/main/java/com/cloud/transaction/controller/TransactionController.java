@@ -15,9 +15,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import java.time.LocalDateTime;
+
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -40,7 +39,7 @@ public class TransactionController {
             baseResponseDto.setMessage(errors.toString());
             return ResponseEntity.badRequest().body(baseResponseDto);
         }
-        transactionService.createTransaciton(transaction);
+        transactionService.createTransaction(transaction);
         log.info("reference number : " + transaction.getReferenceNumber());
         return ResponseEntity.ok(null);
     }
@@ -81,7 +80,7 @@ public class TransactionController {
     public ResponseEntity<TransactionResponseDto> inputAmount(@RequestBody TransactionRequestDto transactionRequestDto) {
         Transaction transaction = TransactionMapper.INSTANCE.transactionRequestDtoToTransaction(transactionRequestDto);
         transaction.setTransactionType(TransactionType.INPUT);
-        TransactionResponseDto transactionResponseDto = transactionService.createTransaciton(transaction);
+        TransactionResponseDto transactionResponseDto = transactionService.createTransaction(transaction);
         return ResponseEntity.ok(transactionResponseDto);
     }
 
@@ -89,7 +88,7 @@ public class TransactionController {
     public ResponseEntity<TransactionResponseDto> withdraw(@RequestBody TransactionRequestDto transactionRequestDto) {
         Transaction transaction = TransactionMapper.INSTANCE.transactionRequestDtoToTransaction(transactionRequestDto);
         transaction.setTransactionType(TransactionType.WITHDRAW);
-        TransactionResponseDto transactionResponseDto = transactionService.createTransaciton(transaction);
+        TransactionResponseDto transactionResponseDto = transactionService.createTransaction(transaction);
         return ResponseEntity.ok(transactionResponseDto);
     }
 
@@ -97,7 +96,7 @@ public class TransactionController {
     public ResponseEntity<TransactionResponseDto> transfer(@RequestBody TransactionRequestDto transactionRequestDto) {
         Transaction transaction = TransactionMapper.INSTANCE.transactionRequestDtoToTransaction(transactionRequestDto);
         transaction.setTransactionType(TransactionType.TRANSFER);
-        TransactionResponseDto transactionResponseDto = transactionService.createTransaciton(transaction);
+        TransactionResponseDto transactionResponseDto = transactionService.createTransaction(transaction);
         return ResponseEntity.ok(transactionResponseDto);
     }
 

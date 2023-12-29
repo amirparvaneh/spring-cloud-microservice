@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface TransactionService {
 
-    TransactionResponseDto createTransaciton(Transaction transaction);
+    TransactionResponseDto createTransaction(Transaction transaction);
 
     List<Transaction> depositTransaction(Integer destDeposit, Integer originDeposit);
 

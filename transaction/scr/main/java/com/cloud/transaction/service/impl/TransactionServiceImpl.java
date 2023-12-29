@@ -36,7 +36,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final EnumValidation<TransactionType> transactionTypeEnumValidation = new EnumValidation<>(TransactionType.class);
 
     @Override
-    public TransactionResponseDto createTransaciton(Transaction transaction) {
+    public TransactionResponseDto createTransaction(Transaction transaction) {
         generateReferenceNumber(transaction);
         log.info("start creating transaction at : " + LocalDateTime.now() + "#reference number# "
                 + transaction.getReferenceNumber());
