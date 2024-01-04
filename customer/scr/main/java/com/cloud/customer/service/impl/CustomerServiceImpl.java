@@ -1,6 +1,5 @@
 package com.cloud.customer.service.impl;
 
-import com.cloud.customer.constant.ErrorMessage;
 import com.cloud.customer.dto.CustomerDto;
 import com.cloud.customer.dto.CustomerFilterDto;
 import com.cloud.customer.dto.DepositResponseDto;
@@ -18,10 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service

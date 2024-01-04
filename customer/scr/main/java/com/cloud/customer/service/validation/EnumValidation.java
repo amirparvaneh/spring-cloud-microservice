@@ -1,13 +1,10 @@
 package com.cloud.customer.service.validation;
 
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
-//@Service
 public class EnumValidation<T extends Enum<T>> {
 
     private final Class<T> enumType;

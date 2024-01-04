@@ -1,6 +1,5 @@
 package com.cloud.customer.service.impl;
 
-import com.cloud.customer.dto.CustomerFilterDto;
 import com.cloud.customer.exception.NotValidCustomerType;
 import com.cloud.customer.exception.NotValidStatus;
 import com.cloud.customer.model.CustomerStatus;
