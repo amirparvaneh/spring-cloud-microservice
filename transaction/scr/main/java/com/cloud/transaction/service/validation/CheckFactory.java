@@ -3,7 +3,6 @@ package com.cloud.transaction.service.validation;
 import com.cloud.transaction.exception.NotValidTransactionType;
 import com.cloud.transaction.model.Transaction;
 import com.cloud.transaction.model.TransactionType;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -16,11 +15,11 @@ public class CheckFactory {
     private final Map<TransactionType, CheckStrategy> validators;
 
     public CheckFactory(InputCheck inputCheck, WithdrawCheck withdrawCheck, TransferCheck transferCheck) {
-        this.validators = initizeValidators(inputCheck,withdrawCheck,transferCheck);
+        this.validators = initializeValidators(inputCheck,withdrawCheck,transferCheck);
     }
 
-    private Map<TransactionType,CheckStrategy> initizeValidators(InputCheck inputCheck,
-                                                                 WithdrawCheck withdrawCheck,TransferCheck transferCheck){
+    private Map<TransactionType,CheckStrategy> initializeValidators(InputCheck inputCheck,
+                                                                    WithdrawCheck withdrawCheck, TransferCheck transferCheck){
         Map<TransactionType,CheckStrategy> validateMap = new HashMap<>();
         validateMap.put(TransactionType.INPUT,inputCheck);
         validateMap.put(TransactionType.WITHDRAW,withdrawCheck);
