@@ -1,16 +1,9 @@
 package com.cloud.customer.controller;
 
-
-
-import com.cloud.customer.constant.ErrorMessage;
 import com.cloud.customer.constant.Message;
 import com.cloud.customer.dto.*;
-import com.cloud.customer.exception.NotValidStatus;
-import com.cloud.customer.exception.RepetitiveNationalCode;
 import com.cloud.customer.mapper.CustomerMapper;
 import com.cloud.customer.model.Customer;
-import com.cloud.customer.model.CustomerStatus;
-import com.cloud.customer.model.CustomerType;
 import com.cloud.customer.service.impl.CustomerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -22,9 +15,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -69,7 +60,6 @@ public class CustomerController {
 
     @GetMapping(value = "/deposit-of-customer/{nationalCode}")
     public ResponseEntity<List<DepositResponseDto>> getCustomerDeposit(@PathVariable String nationalCode) {
-        //todo validation national code
         List<DepositResponseDto> customerDeposit = customerService.getCustomerDeposit(nationalCode);
         return ResponseEntity.ok(customerDeposit);
     }
