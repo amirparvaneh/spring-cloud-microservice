@@ -287,7 +287,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
-    void valdateCustomerStatus_validStatusInput_successfullyValidate(){
+    void validateCustomerStatus_validStatusInput_successfullyValidate(){
         //given
         String validStatus = "ACTIVE";
         CustomerStatus expectedStatus = CustomerStatus.ACTIVE;
