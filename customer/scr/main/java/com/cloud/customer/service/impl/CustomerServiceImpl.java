@@ -118,7 +118,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private String createCustomerCode(Customer customer) {
-        String firstPart = customer.getNationalCo
+        String firstPart = customer.getNationalCode();
         String secondPart = String.valueOf(customer.getCustomerType().getValue());
         String thirdPart = customer.getPhoneNumber().substring(5, 8);
         String customerCode = String.join("_", firstPart, secondPart, thirdPart);

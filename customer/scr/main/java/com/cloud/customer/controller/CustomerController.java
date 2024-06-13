@@ -27,8 +27,8 @@ public class CustomerController {
     private final CustomerServiceImpl customerService;
 
     @PostMapping
-    public ResponseEntity<BaseResponseDto> addCustomer(@RequestBody @Valid CustomerDto customerDto,
-                                                       BindingResult result) {
+    public ResponseEntity<com.cloud.customer.dto.BaseResponseDto> addCustomer(@RequestBody @Valid CustomerDto customerDto,
+                                                                              BindingResult result) {
         BaseResponseDto<String> baseResponseDto = new BaseResponseDto<>();
         if (result.hasErrors()) {
             List<String> errors = result.getAllErrors().stream()

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.time.LocalDateTime;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class NotFoundException extends BusinessException {
+public class NotFoundException extends com.cloud.customer.exception.BusinessException {
 
     public NotFoundException(Long id) {
         super(new ErrorResponse(
