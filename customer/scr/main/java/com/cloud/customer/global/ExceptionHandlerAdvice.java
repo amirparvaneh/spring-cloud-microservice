@@ -26,7 +26,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponse> businessExceptionHandler(BusinessException exception) {
+    public ResponseEntity<com.cloud.customer.global.ErrorResponse> businessExceptionHandler(BusinessException exception) {
         log.info("an exception has occurred : {}", (exception.getErrorResponse().getMessage() + LocalDateTime.now()));
         exception.getErrorResponse().setMessage(messageSource.getMessage(exception.getErrorResponse().getMessage(),
                 exception.getErrorResponse().getArgs(), Locale.getDefault()));
